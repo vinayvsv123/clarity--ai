@@ -15,20 +15,16 @@ const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash"
 });
 
-// ─── Types ───────────────────────────────────────────────────────────
+// ─── Types 
 
 export interface LLMResponse {
     answer: string;
     sourcesUsed: number;
 }
 
-// ─── Prompt Builder ──────────────────────────────────────────────────
+// Prompt for llm
 
-/**
- * Builds the full prompt that is sent to the LLM.
- * Keeps the system instruction, context chunks, and user question
- * clearly separated so the model can distinguish them.
- */
+
 export function buildPrompt(chunks: string[], userQuestion: string): string {
     const numberedContext = chunks
         .map((chunk, i) => `[Source ${i + 1}]\n${chunk}`)
@@ -59,16 +55,8 @@ ${userQuestion}
 `;
 }
 
-// ─── Main LLM Service ────────────────────────────────────────────────
+// Main LLM Service
 
-/**
- * Takes the top-K retrieved chunk texts and the user's question,
- * constructs a RAG prompt, and returns the LLM's answer.
- *
- * @param chunks  - Array of chunk text strings (typically top 5 from retrieval)
- * @param userQuestion - The question asked by the user
- * @returns LLMResponse with the answer and how many sources were provided
- */
 export async function askLLM(
     chunks: string[],
     userQuestion: string
@@ -92,7 +80,9 @@ export async function askLLM(
             answer,
             sourcesUsed: chunks.length,
         };
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error('Error generating LLM response:', error);
         throw new Error('Failed to generate response from LLM');
     }

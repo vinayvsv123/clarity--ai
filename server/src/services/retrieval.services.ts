@@ -34,7 +34,6 @@ export const retrievalChunks=async(matches:pineconematch[]):Promise<string[]> =>
             if(chunk){
                 chunkTexts.push(chunk.text);
             } 
-
             else {
                 console.warn(`Chunk with index ${chunkIndex} not found in document ${documentId}`);
             }

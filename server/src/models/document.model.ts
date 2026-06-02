@@ -11,7 +11,7 @@ export interface IDocument extends MDocument{
     filename:string;
     originalName:string;
     namespace:string;
-    pageCount:number;
+   // pageCount:number;
     totalChunks:number;
     chunks:IChunk[];
     status: 'processing' | 'ready' | 'failed';
@@ -50,9 +50,9 @@ const documentSchema=new mongoose.Schema<IDocument>({
         type:String,
         required:true    
     },
-    pageCount:{
-        type:Number,
-    },
+   // pageCount:{
+   //   type:Number,
+   //},
     totalChunks:{
         type:Number,
     },

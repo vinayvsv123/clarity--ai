@@ -42,7 +42,6 @@ export const upsertVectors=async(vectors:VectorData[])=>{
     } 
     catch (error) {
     console.error('Error upserting vectors:', error);
-
     throw new Error('Failed to upsert vectors');
     }
 }
@@ -74,7 +73,6 @@ export const queryVectors=async({
     }
 };
 
-
 //deleting the document
 
   export const deleteVectors=async(documentId:string)=>{
@@ -87,13 +85,10 @@ export const queryVectors=async({
          }
         });
         console.log(`Vectors with documentId ${documentId} deleted successfully`);
-
     }
 
     catch(error){
-
         console.error('Error deleting vectors:', error);
-
         throw new Error('Failed to delete vectors');
     }
 };

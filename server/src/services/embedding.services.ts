@@ -30,10 +30,10 @@ export async function generateEmbedding(text: string): Promise<number[]>
 
         return embedding;
 
-    } catch (error) {
-
+    } 
+    catch (error) 
+    {
         console.error("Error generating embedding:", error);
-
         throw new Error("Failed to generate embedding.");
     }
 }

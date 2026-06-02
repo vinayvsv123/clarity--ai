@@ -2,14 +2,8 @@ export interface ChunkOptions {
   
   // The maximum size of each chunk in characters.   
   chunkSize?: number;
-
   // The number of characters to overlap between consecutive chunks.
   chunkOverlap?: number;
-
-  // If true, tries to avoid cutting words in half by finding the last whitespace character
-  // within the overlap window to split on.
-  // @default true
-   
   useSmartSplit?: boolean;
 }
 
