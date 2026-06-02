@@ -24,7 +24,7 @@ interface DocumentData {
 export const processDocument = async (documentData: DocumentData): Promise<IDocument> => {
     let document: IDocument | null = null;
     try {
-        console.log(`Starting to process document: ${documentData.originalName}`);
+        console.log('Starting to process document');
 
         // 1. Extract text from the PDF file
         let rawText = "";
@@ -43,13 +43,15 @@ export const processDocument = async (documentData: DocumentData): Promise<IDocu
         }
 
         // 2. Chunk the text
+
         const chunks = ChunkService.chunkText(rawText);
         if (chunks.length === 0) {
             throw new Error("No text chunks generated. Cannot process document.");
         }
-        console.log(`Successfully chunked text into ${chunks.length} chunks.`);
+        console.log('Successfully chunked text ');
 
         // 3. Create document record in MongoDB with 'processing' status
+
         const filename = path.basename(documentData.filePath);
         const namespace = `ns-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 
@@ -65,14 +67,15 @@ export const processDocument = async (documentData: DocumentData): Promise<IDocu
 
         await document.save();
         const documentId = document._id.toString();
-        console.log(`Saved initial document in DB with ID: ${documentId}`);
+        console.log('Saved initial document in DB ');
 
         // 4. Generate embeddings and prepare vectors for Pinecone
+
         const vectors = [];
         const savedChunks = [];
 
         for (const chunk of chunks) {
-            console.log(`Generating embedding for chunk ${chunk.chunkIndex + 1}/${chunks.length}`);
+           console.log('Processing chunk index:', chunk.chunkIndex);
             const embedding = await generateEmbedding(chunk.text);
             const pineconeId = `doc-${documentId}-chunk-${chunk.chunkIndex}`;
 
@@ -93,7 +96,7 @@ export const processDocument = async (documentData: DocumentData): Promise<IDocu
         }
 
         // 5. Upsert vectors to Pinecone
-        console.log(`Upserting ${vectors.length} vectors to Pinecone...`);
+        console.log('Upserting vectors to Pinecone...');
         await upsertVectors(vectors);
         console.log(`Successfully upserted vectors to Pinecone.`);
 
@@ -115,7 +118,6 @@ export const processDocument = async (documentData: DocumentData): Promise<IDocu
                 console.log(`Updated document status to 'failed' in DB.`);
                 
                 // Clean up any partially upserted vectors in Pinecone
-                console.log(`Attempting to clean up Pinecone vectors for failed document ID: ${document._id}`);
                 await deleteVectors(document._id.toString());
             } catch (cleanupError) {
                 console.error(`Error during cleanup after document processing failure:`, cleanupError);
@@ -141,17 +143,17 @@ export const deleteDocument = async (documentId: string): Promise<void> => {
         if (!result) {
             throw new Error(`Document with ID ${documentId} not found in DB.`);
         }
-        
-        console.log(`Document ${documentId} and its vectors deleted successfully.`);
+    
+        console.log('deleted successfully.');
     } catch (error) {
         console.error(`Error deleting document ${documentId}:`, error);
         throw error;
     }
 };
 
-/**
- * Fetches a document by its MongoDB ID.
- */
+
+ // Fetches a document by its MongoDB ID.
+ 
 export const getDocumentById = async (documentId: string): Promise<IDocument | null> => {
     try {
         return await DocumentModel.findById(documentId);
@@ -161,9 +163,8 @@ export const getDocumentById = async (documentId: string): Promise<IDocument | n
     }
 };
 
-/**
- * Fetches all documents belonging to a specific user.
- */
+ // Fetches all documents belonging to a specific user.
+ 
 export const getDocumentsByUser = async (userId: string): Promise<IDocument[]> => {
     try {
         return await DocumentModel.find({ userId });
