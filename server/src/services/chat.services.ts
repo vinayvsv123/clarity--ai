@@ -228,3 +228,66 @@ export const deleteChatHistory = async (
         throw error;
     }
 };
+
+// ─────────────────────────────────────────────────────────────
+//  Alias – askQuestion (used by chat.controller.ts)
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Named alias for the `chat` function so the controller can call
+ * `chatService.askQuestion()` as specified in the API contract.
+ */
+export const askQuestion = chat;
+
+// ─────────────────────────────────────────────────────────────
+//  Get Conversations (enriched summaries)
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * Retrieves all conversation threads for a user and enriches each
+ * with document metadata (original name, last message, last activity).
+ *
+ * This powers the conversation list / sidebar in the client UI.
+ *
+ * @param userId - The authenticated user's ID
+ * @returns Array of conversation summary objects
+ */
+export const getConversations = async (userId: string) => {
+    if (!userId) {
+        throw new Error('userId is required');
+    }
+
+    try {
+        // Fetch all chat histories for this user, newest first
+        const chatHistories = await ChatHistory.find({ userId })
+            .sort({ updatedAt: -1 })
+            .lean();
+
+        // Enrich each conversation with document metadata
+        const conversations = await Promise.all(
+            chatHistories.map(async (chat) => {
+                // Fetch the associated document's name
+                const document = await DocumentModel.findById(chat.documentId)
+                    .select('originalName')
+                    .lean();
+
+                // Determine the last message in the conversation
+                const lastMessage = chat.messages.length > 0
+                    ? chat.messages[chat.messages.length - 1]
+                    : null;
+
+                return {
+                    documentId: chat.documentId,
+                    documentName: document?.originalName ?? 'Untitled Document',
+                    lastMessage: lastMessage?.content ?? '',
+                    lastActivity: lastMessage?.createdAt ?? chat.createdAt,
+                };
+            })
+        );
+
+        return conversations;
+    } catch (error) {
+        console.error(`[Chat] Error fetching conversations for user ${userId}:`, error);
+        throw new Error('Failed to retrieve conversations.');
+    }
+};
