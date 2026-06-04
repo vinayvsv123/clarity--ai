@@ -62,21 +62,21 @@ export const chat = async (chatRequest: ChatRequest): Promise<ChatResponse> => {
         );
     }
 
-    //Query Pinecone for Top-5 
-    
-    try{
-    const matches = await queryVectors({
-    queryVector: queryEmbedding,
-    topK: 5,
-    documentId,
-    });
-
-    console.log('pinecone query successfully completed');
-}
-catch (error) {
-    console.error('[Chat] Pinecone query failed:', error);
-    throw new Error('Vector search failed. Please try again later.');
-}
+    //Query Pinecone for Top-5
+    // Declare outside the try-block so `matches` is accessible in the
+    // subsequent chunk-retrieval step further down.
+    let matches: Awaited<ReturnType<typeof queryVectors>>;
+    try {
+        matches = await queryVectors({
+            queryVector: queryEmbedding,
+            topK: 5,
+            documentId,
+        });
+        console.log('pinecone query successfully completed');
+    } catch (error) {
+        console.error('[Chat] Pinecone query failed:', error);
+        throw new Error('Vector search failed. Please try again later.');
+    }
     // Retrieve Chunk Texts from MongoDB
 
     let chunkTexts: string[];
@@ -84,12 +84,15 @@ catch (error) {
         console.log('[Chat] Retrieving chunk texts from MongoDB...');
 
      
-       const formattedMatches = matches.map((match) => ({
-    Metadata: {
-        documentId: match.metadata?.documentId || documentId,
-        chunkIndex: match.metadata?.chunkIndex ?? 0,
-    },
-}));
+        // Pinecone metadata values are typed as RecordMetadataValue
+        // (string | number | boolean | string[]). Coerce to the exact
+        // primitive types that `pineconematch` / retrievalChunks expects.
+        const formattedMatches = matches.map((match) => ({
+            Metadata: {
+                documentId: String(match.metadata?.documentId ?? documentId),
+                chunkIndex: Number(match.metadata?.chunkIndex ?? 0),
+            },
+        }));
 
         chunkTexts = await retrievalChunks(formattedMatches);
         console.log('chunk texts successfully retrieved');

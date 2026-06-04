@@ -5,43 +5,17 @@ import {
     deleteChatHistory,
     getConversations,
 } from '../controllers/chat.controller.js';
+import authMiddleware from '../middleware/auth.middleware.js';
+import { chatLimitMiddleware } from '../middleware/rateLimit.middleware.js';
 
 const router = express.Router();
 
-// ─────────────────────────────────────────────────────────────
-//  Chat Routes
-//
-//  All routes below are protected by auth middleware applied
-//  at the app level when this router is mounted.
-//
-//  Base path: /api/chat
-// ─────────────────────────────────────────────────────────────
+router.post('/ask', chatLimitMiddleware, authMiddleware, askQuestion);
 
-/**
- * POST /api/chat/ask
- * Ask a question about a specific document.
- * Body: { documentId: string, question: string }
- */
-router.post('/ask', askQuestion);
+router.get('/conversations', chatLimitMiddleware, authMiddleware, getConversations);
 
-/**
- * GET /api/chat/conversations
- * Retrieve all conversation summaries for the authenticated user.
- * Note: This route MUST be defined before '/history/:documentId'
- * to avoid "conversations" being captured as a :documentId param.
- */
-router.get('/conversations', getConversations);
+router.get('/history/:documentId', chatLimitMiddleware, authMiddleware, getChatHistory);
 
-/**
- * GET /api/chat/history/:documentId
- * Retrieve full chat history for a specific document.
- */
-router.get('/history/:documentId', getChatHistory);
-
-/**
- * DELETE /api/chat/history/:documentId
- * Delete all chat history for a specific document.
- */
-router.delete('/history/:documentId', deleteChatHistory);
+router.delete('/history/:documentId', chatLimitMiddleware, authMiddleware, deleteChatHistory);
 
 export default router;

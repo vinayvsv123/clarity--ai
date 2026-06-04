@@ -14,7 +14,7 @@ app.get('/',(req,res)=> {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/document",documentRoutes)
+app.use("/api/documents",documentRoutes)
 app.use("/api/chat", chatRoutes);
 
 export default app;

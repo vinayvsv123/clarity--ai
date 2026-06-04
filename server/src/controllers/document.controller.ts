@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiResponse from '../utils/apiResponse.js';
 import DocumentModel from '../models/document.model.js';
+import Multer from 'multer';
 import {
     processDocument,
     deleteDocument as deleteDocumentService,
@@ -22,6 +23,8 @@ interface AuthRequest extends Request {
         id: string;
         email: string;
     };
+    // Populated by multer middleware on file-upload routes
+    file?: Express.Multer.File;
 }
 
 /** MIME types accepted for document upload. */
@@ -148,7 +151,9 @@ export const getAllDocuments = asyncHandler(
 export const getDocumentById = asyncHandler(
     async (req: AuthRequest, res: Response) => {
         const userId = extractUserId(req, res);
-        const { id } = req.params;
+        // Express 5 types req.params values as string | string[].
+        // Named params (e.g. ':id') are always a single string — cast safely.
+        const id = req.params.id as string;
 
         // Fetch document from MongoDB
         const document = await DocumentModel.findById(id);
@@ -189,7 +194,8 @@ export const getDocumentById = asyncHandler(
 export const getDocumentStatus = asyncHandler(
     async (req: AuthRequest, res: Response) => {
         const userId = extractUserId(req, res);
-        const { id } = req.params;
+        // Express 5 types req.params values as string | string[].
+        const id = req.params.id as string;
 
         // Fetch only the fields we need for a minimal response
         const document = await DocumentModel.findById(id).select('status userId');
@@ -233,7 +239,8 @@ export const getDocumentStatus = asyncHandler(
 export const deleteDocument = asyncHandler(
     async (req: AuthRequest, res: Response) => {
         const userId = extractUserId(req, res);
-        const { id } = req.params;
+        // Express 5 types req.params values as string | string[].
+        const id = req.params.id as string;
 
         // --- Verify existence & ownership before deletion ----------------------
         const document = await DocumentModel.findById(id);
