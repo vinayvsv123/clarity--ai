@@ -1,0 +1,251 @@
+.doc-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+  align-self: flex-start;
+}
+
+.back-link:hover {
+  color: var(--text-primary);
+}
+
+/* Page Layout */
+.doc-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.doc-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.doc-detail-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+}
+
+.doc-detail-header-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+}
+
+.doc-detail-logo-box {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--accent-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.doc-detail-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.doc-detail-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-detail-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doc-detail-id-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Metadata Grid */
+.doc-metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.3);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+}
+
+.metadata-icon {
+  color: var(--text-muted);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.metadata-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.metadata-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.metadata-value {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+/* Actions Footer */
+.doc-detail-actions-footer {
+  border-top: 1px solid var(--border-glass);
+  padding-top: 24px;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 12px;
+}
+
+/* RAG Pipeline visualizer */
+.rag-pipeline-card {
+  background: rgba(15, 23, 42, 0.2);
+  border: 1px solid var(--border-glass);
+}
+
+.rag-pipeline-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.rag-pipeline-intro {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: 24px;
+}
+
+.pipeline-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+}
+
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  position: relative;
+}
+
+.pipeline-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid var(--accent-primary);
+  color: var(--accent-tertiary);
+  font-weight: 700;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.pipeline-step-text h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.pipeline-step-text p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Loading skeleton styles */
+.doc-detail-loading {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pipeline-steps {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .pipeline-step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .pipeline-step-num {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .doc-metadata-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-detail-header-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .action-buttons-group {
+    flex-direction: column;
+  }
+}
